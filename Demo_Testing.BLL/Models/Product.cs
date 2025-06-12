@@ -9,8 +9,16 @@
         }
 
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public required double Price { get; set; }
-        public required VatEnum Vat { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public VatEnum Vat { get; set; }
+
+        public Product(int id, string name, double price, VatEnum vat)
+        {
+            Id = id;
+            Name = name;
+            Price = price;
+            Vat = vat;
+        }
     }
 }
