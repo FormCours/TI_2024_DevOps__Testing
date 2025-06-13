@@ -170,7 +170,6 @@ namespace Demo_Testing.BLL.Test.Services
         }
 
         [Fact]
-
         public void UpdateQuantity_NonExistingProduct_ThrowProductNotFoundCartException()
         {
             // Arrange
