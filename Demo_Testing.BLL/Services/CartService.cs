@@ -57,7 +57,8 @@ namespace Demo_Testing.BLL.Services
 
         public double GetTotalPrice()
         {
-            throw new NotImplementedException();
+            double totalPrice = _cartItems.Select(ci => ci.Product.Price * ci.Quantity).Sum();
+            return Math.Round(totalPrice, 2);
         }
 
         public double GetTotalPriceTTC()

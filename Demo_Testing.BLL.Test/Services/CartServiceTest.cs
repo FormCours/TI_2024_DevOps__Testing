@@ -185,5 +185,78 @@ namespace Demo_Testing.BLL.Test.Services
 
             Assert.Equal(expected_message_exception, actual_exception.Message);
         }
+
+        [Theory]
+        [InlineData(5, 2, 3, 7, 6, 23)]
+        [InlineData(9, 22, 21, 0, 9, 61)]
+        [InlineData(1_000, 1_500, 499, 1_001, 42, 4042)]
+        public void Add_SingleProduct_CheckQuantityProductAfterManyAddSameProduct(
+              int qty1, int qty2, int qty3, int qty4, int qty5, int expected_qty)
+        {
+            // Arrange
+            Product product = new Product(1, "Banana", 16.99, Product.VatEnum.FOOD);
+
+            Product expected_product = new Product(1, "Banana", 16.99, Product.VatEnum.FOOD);
+
+            // Action
+            _cartService.Add(product, qty1);
+            _cartService.Add(product, qty2);
+            _cartService.Add(product, qty3);
+            _cartService.Add(product, qty4);
+            _cartService.Add(product, qty5);
+
+            CartItem actual_item = _cartService.CartItems.Single();
+            // Assert
+            Assert.Equivalent(expected_product, actual_item.Product);
+            Assert.Equal(expected_qty, actual_item.Quantity);
+        }
+
+        [Theory]
+        [InlineData(5, 10, 50, 65)]
+        [InlineData(5.3, 1.3, 1.1, 7.7)]
+        [InlineData(901.9, 102.06, 333.04, 1337)]
+        public void GetTotalPrice_MultipleProductWithQuantityToOne_CheckCorrectTotalPrice(
+            double price1, double price2, double price3, double expectedTotalPrice
+            )
+        {
+            // Arrange
+            Product product1 = new Product(1, "Banana plantain", price1, Product.VatEnum.FOOD);
+            Product product2 = new Product(2, "Banana Cavendish", price2, Product.VatEnum.FOOD);
+            Product product3 = new Product(3, "Banana pinky :3", price3, Product.VatEnum.FOOD);
+            int productQuantity = 1;
+
+            // Action
+            _cartService.Add(product1, productQuantity);
+            _cartService.Add(product2, productQuantity);
+            _cartService.Add(product3, productQuantity);
+            double actualTotalPrice = _cartService.GetTotalPrice();
+
+            // Assert
+            Assert.Equal(expectedTotalPrice, actualTotalPrice);
+        }
+
+        [Theory]
+        [InlineData(5, 3, 6, 3, 5, 2, 42)]
+        [InlineData(1.5, 0.99, 6.03, 10, 9, 3, 42)]
+        [InlineData(0.99, 0.45, 5, 11, 3, 3, 27.24)]
+        public void GetTotalPrice_MultipleProductWithDifferentQuantity_CheckCorrectTotalPrice(
+            double price1, double price2, double price3,
+            int quantity1, int quantity2, int quantity3, double expectedTotalPrice
+            )
+        {
+            // Arrange
+            Product product1 = new Product(1, "Ananas Sweet", price1, Product.VatEnum.FOOD);
+            Product product2 = new Product(2, "Ananas Cayenne Lisse", price2, Product.VatEnum.FOOD);
+            Product product3 = new Product(3, "Ananas Victoria", price3, Product.VatEnum.FOOD);
+
+            // Action
+            _cartService.Add(product1, quantity1);
+            _cartService.Add(product2, quantity2);
+            _cartService.Add(product3, quantity3);
+            double actualTotalPrice = _cartService.GetTotalPrice();
+
+            // Assert
+            Assert.Equal(expectedTotalPrice, actualTotalPrice);
+        }
     }
 }
