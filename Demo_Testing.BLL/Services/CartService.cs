@@ -8,17 +8,15 @@ namespace Demo_Testing.BLL.Services
     {
         private readonly List<CartItem> _cartItems = [];
 
-        public IEnumerable<CartItem> CartItems 
+        public IEnumerable<CartItem> CartItems
         {
             get { return _cartItems.AsReadOnly(); }
         }
 
         public bool Add(Product product, int quantity)
         {
-            if(quantity < 0)
-            {
-                throw new NegativeQuantityCartException(product, quantity);
-            }
+            if (quantity < 0) throw new NegativeQuantityCartException(product, quantity);
+            if (quantity == 0) return false;
 
             CartItem? cart = _cartItems.SingleOrDefault(ci => ci.Product.Id == product.Id);
             if (cart is not null)
@@ -28,22 +26,33 @@ namespace Demo_Testing.BLL.Services
             }
 
             _cartItems.Add(new CartItem
-            {
-                Product = product,
-                Quantity = quantity
-            });
-
+                {
+                    Product = product,
+                    Quantity = quantity
+                });
             return true;
         }
 
         public bool ModifyQuantity(Product product, int quantity)
         {
-            throw new NotImplementedException();
+            CartItem? cartItem = _cartItems.SingleOrDefault(item => item.Product.Id == product.Id);
+
+            if (cartItem is null) {
+                throw new ProductNotFoundCartException(product);
+            }
+
+            if (quantity == 0) {
+                return Remove(product);
+            }
+            
+            cartItem.Quantity = quantity;
+            return true;
         }
 
         public bool Remove(Product product)
         {
-            throw new NotImplementedException();
+            int deletedItemCount = _cartItems.RemoveAll(item => product.Id == item.Product.Id);
+            return deletedItemCount == 1;
         }
 
         public double GetTotalPrice()

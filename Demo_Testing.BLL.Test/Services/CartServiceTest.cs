@@ -60,11 +60,11 @@ namespace Demo_Testing.BLL.Test.Services
             Product product = new Product(3, "Casier de tomate", 49.95, Product.VatEnum.FOOD);
             int bad_quantity = -2;
             string expected_message_exception = "Negative quantity in cart";
-
-            // Action + Assert
             CartService cartService = new CartService();
 
-            // - L'exception est déclanché ?
+            // Action + Assert
+
+            // - L'exception est déclenchée ?
             var actual_exception = Assert.Throws<NegativeQuantityCartException>(() =>
             {
                 cartService.Add(product, bad_quantity);
@@ -84,7 +84,7 @@ namespace Demo_Testing.BLL.Test.Services
             Product product = new Product(1, "boite de mouchoir", 99.99, Product.VatEnum.NO_FOOD);
             cartService.Add(product, 8);
             Product remove_product = new Product(1, "boite de mouchoir", 99.99, Product.VatEnum.NO_FOOD);
-            
+
             // Action
             bool actual_result = cartService.Remove(remove_product);
             List<CartItem> actual_cartItems = cartService.CartItems.ToList();
@@ -92,6 +92,101 @@ namespace Demo_Testing.BLL.Test.Services
             // Assert
             Assert.Empty(actual_cartItems);
             Assert.True(actual_result);
+        }
+
+        [Fact]
+        public void Add_WithQuantityZero_ServiceContainsNoProduct()
+        {
+            // Arrange
+            CartService cartService = new CartService();
+            Product product = new Product(1, "PetRock 2.0", 10.50, Product.VatEnum.NO_FOOD);
+            int productQuantity = 0;
+
+            // Action
+            bool actual_result = cartService.Add(product, productQuantity);
+            List<CartItem> actual_cartItems = cartService.CartItems.ToList();
+
+            // Assert
+            Assert.False(actual_result);
+            Assert.Empty(actual_cartItems);
+
+        }
+
+        [Fact]
+        public void Remove_NonExistingProduct_ReturnFalse()
+        {
+            // Arrange
+            CartService cartService = new CartService();
+            Product product = new Product(1, "Quantum banana", 0.99, Product.VatEnum.FOOD);
+
+            // Action
+            bool isSuccess = cartService.Remove(product);
+
+            // Assert
+            Assert.False(isSuccess);
+        }
+
+        [Fact]
+        public void UpdateQuantity_ExistingProduct_CartContainsProductWithNewQuantity()
+        {
+            // Arrange
+            CartService cartService = new CartService();
+            Product initialProduct = new Product(1, "Moon Cookie", 16.99, Product.VatEnum.FOOD);
+            int initialQuantity = 4;
+            cartService.Add(initialProduct, initialQuantity);
+
+            Product updatedProduct = new Product(1, "Moon Cookie", 16.99, Product.VatEnum.FOOD);
+            int updatedQuantity = 42;
+            int expectedQuantity = 42;
+
+            // Action
+            bool actual_result = cartService.ModifyQuantity(updatedProduct, updatedQuantity);
+            List<CartItem> actual_items = cartService.CartItems.ToList();
+
+            // Assert
+            Assert.True(actual_result);
+            Assert.Equal(expectedQuantity, actual_items[0].Quantity);
+        }
+
+        [Fact]
+        public void UpdateQuantity_ExistingProduct_RemoveWhenQuantityEqualZero()
+        {
+            // Arrange
+            CartService cartService = new CartService();
+            Product initialProduct = new Product(1, "Moon Cookie 2", 16.99, Product.VatEnum.FOOD);
+            int initialQuantity = 4;
+            cartService.Add(initialProduct, initialQuantity);
+
+            Product updatedProduct = new Product(1, "Moon Cookie 2", 16.99, Product.VatEnum.FOOD);
+            int updatedQuantity = 0;
+
+            // Action
+            bool actual_result = cartService.ModifyQuantity(updatedProduct, updatedQuantity);
+            List<CartItem> actual_items = cartService.CartItems.ToList();
+
+            // Assert
+            Assert.True(actual_result);
+            Assert.Empty(actual_items);
+        }
+
+        [Fact]
+
+        public void UpdateQuantity_NonExistingProduct_ThrowProductNotFoundCartException()
+        {
+            // Arrange
+            CartService cartService = new CartService();
+            string expected_message_exception = "The product \"Banana\" is not found !";
+
+            Product updatedProduct = new Product(1, "Banana", 16.99, Product.VatEnum.FOOD);
+            int updatedQuantity = 12;
+
+            // Action + Assert
+            var actual_exception = Assert.Throws<ProductNotFoundCartException>(() =>
+            {
+                cartService.ModifyQuantity(updatedProduct, updatedQuantity);
+            });
+
+            Assert.Equal(expected_message_exception, actual_exception.Message);
         }
     }
 }

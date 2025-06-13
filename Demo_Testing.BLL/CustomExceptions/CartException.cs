@@ -21,4 +21,13 @@ namespace Demo_Testing.BLL.CustomExceptions
             Quantity = quantity;
         }
     }
+
+    public class ProductNotFoundCartException : CartException
+    {
+        public ProductNotFoundCartException(Product product) 
+            : base($"The product \"{product.Name}\" is not found !")
+        {
+
+        }
+    }
 }
