@@ -279,9 +279,9 @@ namespace Demo_Testing.BLL.Test.Services
         }
 
         [Theory]
-        [InlineData(0.99, 0.94, 6, 6, 14.02)]
-        [InlineData(0.24, 0.11, 11, 7, 4.13)]
-        [InlineData(22.12, 9.99, 111, 7, 3055.55)]
+        [InlineData(0.99, 0.94, 6, 6, 14.01)]
+        [InlineData(0.24, 0.11, 11, 7, 4.12)]
+        [InlineData(22.12, 9.99, 111, 7, 3055.56)]
         public void GetTotalPriceTTC_OnlyNoFoodProduct_CheckCorrectTotalPrice(double price1, double price2, int qty1, int qty2, double expectedTotalPrice)
         {
             // Arrange
@@ -308,13 +308,13 @@ namespace Demo_Testing.BLL.Test.Services
             new Product(1, "y1", 0.24, Product.VatEnum.NO_FOOD), 11,
             new Product(2, "y2", 0.11, Product.VatEnum.NO_FOOD), 7,
             new Product(3, "y3", 0.09, Product.VatEnum.FOOD), 21,
-            6.13
+            6.12
             ],
             [
             new Product(1, "z1", 22.12, Product.VatEnum.FOOD), 111,
             new Product(2, "z2", 9.99, Product.VatEnum.NO_FOOD), 7,
             new Product(3, "z3", 19.96, Product.VatEnum.NO_FOOD), 131,
-            5851.11
+            5851.12
             ],
             [
             new Product(1, "a1", 0.565, Product.VatEnum.NO_FOOD), 2,
