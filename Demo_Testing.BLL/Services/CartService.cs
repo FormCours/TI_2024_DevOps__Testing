@@ -68,8 +68,8 @@ namespace Demo_Testing.BLL.Services
             {
                 double priceHT = Math.Round(item.Product.Price * item.Quantity, 2, MidpointRounding.AwayFromZero);
                 double VAT = Math.Round(priceHT * (item.Product.Vat == Product.VatEnum.FOOD ? 0.06 : 0.21), 2, MidpointRounding.AwayFromZero);
-                double priceTTC = Math.Round(priceHT + VAT, 2, MidpointRounding.AwayFromZero);
-                grandTotal = grandTotal + priceTTC;
+                double priceTTC = priceHT + VAT;
+                grandTotal += priceTTC;
             }
             return Math.Round(grandTotal, 2, MidpointRounding.AwayFromZero);
         }
