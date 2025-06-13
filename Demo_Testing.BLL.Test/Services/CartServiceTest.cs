@@ -258,5 +258,84 @@ namespace Demo_Testing.BLL.Test.Services
             // Assert
             Assert.Equal(expectedTotalPrice, actualTotalPrice);
         }
+
+        [Theory]
+        [InlineData(0.99, 0.94, 6, 6, 12.28)]
+        [InlineData(0.24, 0.11, 11, 7, 3.62)]
+        [InlineData(22.12, 9.99, 111, 7, 2676.77)]
+        public void GetTotalPriceTTC_OnlyFoodProduct_CheckCorrectTotalPrice(double price1, double price2, int qty1, int qty2, double expectedTotalPrice)
+        {
+            // Arrange
+            Product product1 = new Product(1, "Blackberry", price1, Product.VatEnum.FOOD);
+            Product product2 = new Product(2, "Yellowberry", price2, Product.VatEnum.FOOD);
+
+            // Action
+            _cartService.Add(product1, qty1);
+            _cartService.Add(product2, qty2);
+            double actual_priceTTC = _cartService.GetTotalPriceTTC();
+
+            // Assert
+            Assert.Equal(expectedTotalPrice, actual_priceTTC);
+        }
+
+        [Theory]
+        [InlineData(0.99, 0.94, 6, 6, 14.02)]
+        [InlineData(0.24, 0.11, 11, 7, 4.13)]
+        [InlineData(22.12, 9.99, 111, 7, 3055.55)]
+        public void GetTotalPriceTTC_OnlyNoFoodProduct_CheckCorrectTotalPrice(double price1, double price2, int qty1, int qty2, double expectedTotalPrice)
+        {
+            // Arrange
+            Product product1 = new Product(1, "tissue box", price1, Product.VatEnum.NO_FOOD);
+            Product product2 = new Product(2, "tissue packet", price2, Product.VatEnum.NO_FOOD);
+
+            // Action
+            _cartService.Add(product1, qty1);
+            _cartService.Add(product2, qty2);
+            double actual_priceTTC = _cartService.GetTotalPriceTTC();
+
+            // Assert
+            Assert.Equal(expectedTotalPrice, actual_priceTTC);
+        }
+
+        public static IEnumerable<object[]> productCartData = [
+            [
+            new Product(1, "p1", 0.99, Product.VatEnum.NO_FOOD), 6,
+            new Product(2, "p2", 0.94, Product.VatEnum.FOOD), 6,
+            new Product(3, "p3", 1.01, Product.VatEnum.FOOD), 6,
+            19.59
+            ],
+            [
+            new Product(1, "y1", 0.24, Product.VatEnum.NO_FOOD), 11,
+            new Product(2, "y2", 0.11, Product.VatEnum.NO_FOOD), 7,
+            new Product(3, "y3", 0.09, Product.VatEnum.FOOD), 21,
+            6.13
+            ],
+            [
+            new Product(1, "z1", 22.12, Product.VatEnum.FOOD), 111,
+            new Product(2, "z2", 9.99, Product.VatEnum.NO_FOOD), 7,
+            new Product(3, "z3", 19.96, Product.VatEnum.NO_FOOD), 131,
+            5851.11
+            ],
+            [
+            new Product(1, "a1", 0.565, Product.VatEnum.NO_FOOD), 2,
+            new Product(2, "a2", 0.625, Product.VatEnum.FOOD), 1,
+            new Product(3, "a3", 0.335, Product.VatEnum.NO_FOOD), 3,
+            3.26
+            ],
+        ];
+
+        [Theory]
+        [MemberData(nameof(productCartData))]
+        public void GetTotalPriceTTC_MixVatValueProduct_CheckCorrectTotalPrice(Product product1, int qty1, Product product2, int qty2, Product product3, int qty3, double expectedTotaPrice)
+        {
+            // Action
+            _cartService.Add(product1, qty1);
+            _cartService.Add(product2, qty2);
+            _cartService.Add(product3, qty3);
+            double actual_priceTTC = _cartService.GetTotalPriceTTC();
+            
+            // Assert
+            Assert.Equal(expectedTotaPrice, actual_priceTTC);
+        }
     }
 }
