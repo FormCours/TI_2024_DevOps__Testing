@@ -9,7 +9,6 @@ namespace Demo_Testing.BLL.Test.Services
         private readonly int _initialProductCount;
         public CartService2Test()
         {
-            Console.WriteLine("CartService2Test");
             _cartService = new CartService();
             _cartService.Add(new Product(1, "Pomme", 2.5, Product.VatEnum.FOOD), 5);
             _cartService.Add(new Product(2, "Fraise", 6, Product.VatEnum.FOOD), 1);
@@ -22,7 +21,6 @@ namespace Demo_Testing.BLL.Test.Services
         [Fact]
         public void Add_OneNewProduct_CartServiceContainsNewProduct()
         {
-            Console.WriteLine("Add_OneNewProduct_CartServiceContainsNewProduct");
             // Arrange
             int productId = 9;
             Product productToAdd = new Product(productId, "Banane explosive", 4.99, Product.VatEnum.NO_FOOD);
@@ -47,8 +45,6 @@ namespace Demo_Testing.BLL.Test.Services
         [Fact]
         public void Add_OneExistingProduct_CartServiceUpdateQuantity()
         {
-            Console.WriteLine("Add_OneExistingProduct_CartServiceUpdateQuantity");
-
             // Arrange
             int productId = 2;
             Product productToAdd = new Product(productId, "Fraise", 6, Product.VatEnum.FOOD);
